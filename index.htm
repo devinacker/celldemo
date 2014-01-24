@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Elementary cellular automaton simulator</title>
+	
+	<style type="text/css">
+		td {
+			width: 40px;
+		}
+	</style>
+	
+	<script type="text/javascript">
+	<!--
+		var rule = 0;
+		var starting = "i";
+		
+		var canvas, context;
+		
+		var currstate, nextstate;
+		
+		var timer;
+		var currrow = 0;
+		
+		function init() {
+			//create a drawing context
+			canvas = document.getElementById("canvas");
+			context = canvas.getContext('2d');
+			
+			//default rule
+			rule_set(90);
+		}
+		
+		function draw_row() {
+			
+			for (var i = 0; i < canvas.width; i++) {
+				//draw each cell in the current state
+				if (currstate[i])
+					context.fillStyle = "rgb(0, 0, 0)";
+				else context.fillStyle = "rgb(255, 255, 255)";
+				context.fillRect(i, currrow, 1, 1);
+			
+				//calculate each cell in the next state of the simulation
+				var l, c, r;
+				if (i == 0) {
+					l = false; c = currstate[0]; r = currstate[1];
+				} else if (i == canvas.width - 1) {
+					l = currstate[i-1]; c = currstate[i]; r = false;
+				} else {
+					l = currstate[i-1]; c = currstate[i]; r = currstate[i+1];
+				}
+	
+				var n = 0;
+				if (l == true) n |= 4;
+				if (c == true) n |= 2;
+				if (r == true) n |= 1;
+				
+				nextstate[i] = (rule & Math.pow(2, n)) > 0;
+				
+			}
+			
+			for (var i = 0; i < canvas.width; i++)
+				currstate[i] = nextstate[i];
+			
+			currrow++;
+			currrow %= canvas.height;
+			
+			//draw 100 rows/sec
+			if (timer) setTimeout(draw_row, 10);
+			
+		}
+		
+		function start(){
+		//clear canvas, reset row, unpause, etc.
+			context.clearRect(0, 0, canvas.width, canvas.height);
+		
+			//init the state arrays
+			currstate = new Array(canvas.width);
+			nextstate = new Array(canvas.width);
+			
+			var impulse = document.getElementsByName("impulse[]");
+			
+			for (var i = 0; i < canvas.width; i++) {
+				switch (starting) {
+					case 'i':
+						if ((i == 0 && impulse[0].checked)
+							|| (i == Math.floor(canvas.width/2)-1 && impulse[1].checked)
+							|| (i == canvas.width - 1 && impulse[2].checked))
+							currstate[i] = true;
+						else currstate[i] = false;
+						break;
+					case '25':
+						if (i % 4)
+							currstate[i] = false;
+						else currstate[i] = true;
+						break;
+					case '50':
+						if (i % 2)
+							currstate[i] = false;
+						else currstate[i] = true;
+						break;
+					case '75':
+						if (i % 4)
+							currstate[i] = true;
+						else currstate[i] = false;
+						break;
+					case 'r':
+						if (Math.floor(Math.random() * 2))
+							currstate[i] = true;
+						else currstate[i] = false;
+						break;
+				}
+			}
+			
+			currrow = 0;
+			document.getElementById("pause").disabled = "";
+			unpause();
+		}
+		
+		function pause() {
+			//pause the simulation
+			var button = document.getElementById("pause");
+			button.value = "Unpause";
+			timer = clearTimeout(timer);
+			button.onclick = unpause;
+		}
+		
+		function unpause() {
+			var button = document.getElementById("pause");
+			button.value = "Pause";
+			if (!timer) timer = setTimeout(draw_row, 10);
+			button.onclick = pause;
+		}
+		
+		function rule_xor(num) {
+			//turn on or off one of the next-state rules
+			// where num is a power of 2 corresponding to one of the bits in the rule number
+			rule ^= num;
+			document.getElementById("rule_").innerHTML = rule + '';
+		}
+		
+		function rule_set(num) {
+			//set the simulation's next state rule set to a certain Wolfram number
+			rule = num % 256;
+			document.getElementById("rule_").innerHTML = rule + '';
+			
+			//set or clear each checkbox on the page
+			var checks = document.getElementsByName("rule[]");
+			for (var i = 0; i < 8; i++)
+				checks[i].checked = ((rule & Math.pow(2, 7-i)) > 0);
+		}
+	-->
+	</script>
+</head>
+
+<body onload="init()">
+	<a href="http://mathworld.wolfram.com/ElementaryCellularAutomaton.html" target="_blank">About elementary cellular automata</a><br>
+	About <a href="http://en.wikipedia.org/wiki/Rule_30" target="_blank">Rule 30</a> - 
+	<a href="http://en.wikipedia.org/wiki/Rule_90" target="_blank">Rule 90</a> - 
+	<a href="http://en.wikipedia.org/wiki/Rule_110" target="_blank">Rule 110</a> - 
+	<a href="http://en.wikipedia.org/wiki/Rule_184" target="_blank">Rule 184</a>
+
+	<p></p>Create a next-state rule set, or select a preset.<br>
+	<input type="button" value="Rule 30" onclick="rule_set(30)">
+	<input type="button" value="Rule 90" onclick="rule_set(90)">
+	<input type="button" value="Rule 110" onclick="rule_set(110)">
+	<input type="button" value="Rule 184" onclick="rule_set(184)">
+	<table>
+	<tr><td></td><td>111</td><td>110</td><td>101</td><td>100</td>
+	<td>011</td><td>010</td><td>001</td><td>000</td></tr>
+	<tr><td id="rule_">0</td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(128)"></td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(64)"></td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(32)"></td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(16)"></td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(8)"></td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(4)"></td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(2)"></td>
+	<td><input type="checkbox" name="rule[]" onclick="rule_xor(1)"></td>
+	</tr>
+	</table>
+	<hr>
+	Select a starting condition:
+	<table width=50%><tr>
+	<td><input type="radio" name="condition" onclick="starting='i'" checked> Impulse<br>
+	<input type="checkbox" name="impulse[]"> Left<br>
+	<input type="checkbox" name="impulse[]" checked> Center<br>
+	<input type="checkbox" name="impulse[]"> Right<br>
+	</td>
+	<td><input type="radio" name="condition" onclick="starting='25'"> 25%<br>
+	<input type="radio" name="condition" onclick="starting='50'"> 50%<br>
+	<input type="radio" name="condition" onclick="starting='75'"> 75%<br>
+	<input type="radio" name="condition" onclick="starting='r'"> Random<br>
+	</td>
+	</tr></table>
+	<hr>
+	<input type="button" id="start" value="Start" onclick="start()">
+	<input type="button" id="pause" value="Pause" disabled="disabled">
+	<br><canvas id="canvas" width="600" height="300">Whoops! Looks like you have JavaScript disabled, or your browser isn't HTML5 compatible.</canvas>
+</body>
+</html>
