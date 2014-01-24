@@ -32,11 +32,6 @@
 		}
 		
 		function draw_row() {
-			if (currrow == canvas.height - 1) {
-				var data = context.getImageData(0, 1, canvas.width, canvas.height);
-				context.putImageData(data, 0, 0);
-			}
-			
 			for (var i = 0; i < canvas.width; i++) {
 				//draw each cell in the current state
 				if (currstate[i])
@@ -68,6 +63,10 @@
 			
 			if (currrow < canvas.height - 1)
 				currrow++;
+			else {
+				var data = context.getImageData(0, 1, canvas.width, canvas.height - 1);
+				context.putImageData(data, 0, 0);
+			}
 			
 			//draw 100 rows/sec
 			if (timer) setTimeout(draw_row, 10);
