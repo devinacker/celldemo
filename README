@@ -2,7 +2,7 @@ Live version: http://devinacker.github.io/celldemo/
 
 This is a small old HTML5 / JavaScript demo I wrote a few years ago. It simulates 1-dimensional cellular automata of the sort described by Steven Wolfram. I did this both as an exploration of these automata, which I had recently read about, and as a personal introduction to the HTML5 canvas element.
 
-The demo draws each generation of the simulation as a successive row on the canvas, wrapping around to the top periodically. The rule set is determined by a series of checkboxes corresponding to each possible state of a cell and its two immediate neighbors; the state of the checkbox (on or off) determines whether a cell in a given neighborhood will be alive or dead in the following generation. The rule set can be changed on-the-fly while the simulation is running for some visually and mathematically interesting results.
+The demo draws each generation of the simulation as a successive row on the canvas. The rule set is determined by a series of checkboxes corresponding to each possible state of a cell and its two immediate neighbors; the state of the checkbox (on or off) determines whether a cell in a given neighborhood will be alive or dead in the following generation. The rule set can be changed on-the-fly while the simulation is running for some visually and mathematically interesting results.
 
 Some relevant reading material about Wolfram's cellular automata, and the four presets featured in the demo:
 
