@@ -32,9 +32,12 @@
 		}
 		
 		function draw_row() {
-			if (currrow < canvas.height - 1)
+			var scroll = document.getElementById("scroll").checked;
+			
+			if (!scroll || currrow < canvas.height - 1) {
 				currrow++;
-			else {
+				currrow %= canvas.height;
+			} else {
 				var data = context.getImageData(0, 1, canvas.width, canvas.height - 1);
 				context.putImageData(data, 0, 0);
 			}
@@ -144,7 +147,7 @@
 		
 		function rule_set(num) {
 			//set the simulation's next state rule set to a certain Wolfram number
-			rule = num % 256;
+			rule = Math.floor(num % 256);
 			document.getElementById("rule_").innerHTML = rule + '';
 			
 			//set or clear each checkbox on the page
@@ -169,6 +172,7 @@
 	<input type="button" value="Rule 90" onclick="rule_set(90)">
 	<input type="button" value="Rule 110" onclick="rule_set(110)">
 	<input type="button" value="Rule 184" onclick="rule_set(184)">
+	<input type="button" value="Random" onclick="rule_set(255 * Math.random())">
 	<table>
 	<tr><td></td><td>111</td><td>110</td><td>101</td><td>100</td>
 	<td>011</td><td>010</td><td>001</td><td>000</td></tr>
@@ -186,20 +190,21 @@
 	<hr>
 	Select a starting condition:
 	<table width=50%><tr>
-	<td><input type="radio" name="condition" onclick="starting='i'" checked> Impulse<br>
-	<input type="checkbox" name="impulse[]"> Left<br>
-	<input type="checkbox" name="impulse[]" checked> Center<br>
-	<input type="checkbox" name="impulse[]"> Right<br>
+	<td><label><input type="radio" name="condition" onclick="starting='i'" checked> Impulse</label><br>
+	<label><input type="checkbox" name="impulse[]"> Left</label><br>
+	<label><input type="checkbox" name="impulse[]" checked> Center</label><br>
+	<label><input type="checkbox" name="impulse[]"> Right</label><br>
 	</td>
-	<td><input type="radio" name="condition" onclick="starting='25'"> 25%<br>
-	<input type="radio" name="condition" onclick="starting='50'"> 50%<br>
-	<input type="radio" name="condition" onclick="starting='75'"> 75%<br>
-	<input type="radio" name="condition" onclick="starting='r'"> Random<br>
+	<td><label><input type="radio" name="condition" onclick="starting='25'"> 25%</label><br>
+	<label><input type="radio" name="condition" onclick="starting='50'"> 50%</label><br>
+	<label><input type="radio" name="condition" onclick="starting='75'"> 75%</label><br>
+	<label><input type="radio" name="condition" onclick="starting='r'"> Random</label><br>
 	</td>
 	</tr></table>
 	<hr>
 	<input type="button" id="start" value="Start" onclick="start()">
-	<input type="button" id="pause" value="Pause" disabled="disabled">
+	<input type="button" id="pause" value="Pause" disabled>
+	<label><input type="checkbox" id="scroll" checked> Scroll continuously</label>
 	<br><canvas id="canvas" width="600" height="300">Whoops! Looks like you have JavaScript disabled, or your browser isn't HTML5 compatible.</canvas>
 </body>
 </html>
