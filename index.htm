@@ -177,16 +177,27 @@
 	<tr><td></td><td>111</td><td>110</td><td>101</td><td>100</td>
 	<td>011</td><td>010</td><td>001</td><td>000</td></tr>
 	<tr><td id="rule_">0</td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(128)"></td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(64)"></td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(32)"></td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(16)"></td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(8)"></td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(4)"></td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(2)"></td>
-	<td><input type="checkbox" name="rule[]" onclick="rule_xor(1)"></td>
+	<td><input type="checkbox" name="rule[]" id="check128" onclick="rule_xor(128)"></td>
+	<td><input type="checkbox" name="rule[]" id="check64" onclick="rule_xor(64)"></td>
+	<td><input type="checkbox" name="rule[]" id="check32" onclick="rule_xor(32)"></td>
+	<td><input type="checkbox" name="rule[]" id="check16" onclick="rule_xor(16)"></td>
+	<td><input type="checkbox" name="rule[]" id="check8" onclick="rule_xor(8)"></td>
+	<td><input type="checkbox" name="rule[]" id="check4" onclick="rule_xor(4)"></td>
+	<td><input type="checkbox" name="rule[]" id="check2" onclick="rule_xor(2)"></td>
+	<td><input type="checkbox" name="rule[]" id="check1" onclick="rule_xor(1)"></td>
+	</tr>
+	<tr><td></td>
+	<td>A</td>
+	<td>S</td>
+	<td>D</td>
+	<td>F</td>
+	<td>J</td>
+	<td>K</td>
+	<td>L</td>
+	<td>;</td>
 	</tr>
 	</table>
+	You can also toggle each pattern using the keyboard.
 	<hr>
 	Select a starting condition:
 	<table width=50%><tr>
@@ -206,5 +217,27 @@
 	<input type="button" id="pause" value="Pause" disabled>
 	<label><input type="checkbox" id="scroll" checked> Scroll continuously</label>
 	<br><canvas id="canvas" width="600" height="300">Whoops! Looks like you have JavaScript disabled, or your browser isn't HTML5 compatible.</canvas>
+
+	<script>
+		var table = {
+			'KeyA': 128,
+			'KeyS': 64,
+			'KeyD': 32,
+			'KeyF': 16,
+			'KeyJ': 8,
+			'KeyK': 4,
+			'KeyL': 2,
+			'Semicolon': 1,
+		};
+
+		document.addEventListener('keypress', function (e) {
+			if (table.hasOwnProperty(e.code)) {
+				var bit = table[e.code];
+				rule_xor(bit);
+				var checkbox = document.querySelector('#check' + bit);
+				checkbox.checked = !checkbox.checked;
+			}
+		})
+	</script>
 </body>
 </html>
